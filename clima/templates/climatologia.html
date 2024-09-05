@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfica de Datos Climatológicos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Gráfica de Datos Climatológicos</h1>
+    
+    <canvas id="graficoClimatologia" width="800" height="400"></canvas>
+
+    <script>
+        
+        const _fechas = {{ fechas | safe }};
+        const _temperaturas = {{ temperaturas | safe }};
+        const _humedades = {{ humedades | safe }};
+        const _presiones = {{ presiones | safe }};
+        const _velocidades_viento = {{ velocidades_viento | safe }};
+
+        const ctx = document.getElementById('graficoClimatologia').getContext('2d');
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: _fechas,
+                datasets: [
+                    {
+                        label: 'Temperatura (°C)',
+                        data: _temperaturas,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Humedad (%)',
+                        data: _humedades,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Presión (hPa)',
+                        data: _presiones,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Velocidad del Viento (km/h)',
+                        data: _velocidades_viento,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Fecha'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Valor'
+                        },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

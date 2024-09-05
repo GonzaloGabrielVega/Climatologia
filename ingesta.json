@@ -1,0 +1,112 @@
+[
+    {
+        "model": "clima.climatologia",
+        "pk": 1,
+        "fields": {
+            "fecha": "2024-09-01T08:00:00Z",
+            "temperatura": 22.5,
+            "humedad": 60.2,
+            "presion": 1012.3,
+            "velocidad_viento": 15.4
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 2,
+        "fields": {
+            "fecha": "2024-09-01T12:00:00Z",
+            "temperatura": 25.0,
+            "humedad": 55.1,
+            "presion": 1010.8,
+            "velocidad_viento": 18.2
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 3,
+        "fields": {
+            "fecha": "2024-09-01T16:00:00Z",
+            "temperatura": 27.3,
+            "humedad": 50.4,
+            "presion": 1009.5,
+            "velocidad_viento": 20.0
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 4,
+        "fields": {
+            "fecha": "2024-09-01T20:00:00Z",
+            "temperatura": 23.8,
+            "humedad": 65.0,
+            "presion": 1011.0,
+            "velocidad_viento": 12.5
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 5,
+        "fields": {
+            "fecha": "2024-09-02T00:00:00Z",
+            "temperatura": 20.1,
+            "humedad": 70.3,
+            "presion": 1013.8,
+            "velocidad_viento": 10.0
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 6,
+        "fields": {
+            "fecha": "2024-09-02T04:00:00Z",
+            "temperatura": 18.0,
+            "humedad": 75.5,
+            "presion": 1015.2,
+            "velocidad_viento": 8.6
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 7,
+        "fields": {
+            "fecha": "2024-09-02T08:00:00Z",
+            "temperatura": 19.3,
+            "humedad": 68.4,
+            "presion": 1014.0,
+            "velocidad_viento": 9.8
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 8,
+        "fields": {
+            "fecha": "2024-09-02T12:00:00Z",
+            "temperatura": 24.5,
+            "humedad": 62.1,
+            "presion": 1010.5,
+            "velocidad_viento": 14.7
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 9,
+        "fields": {
+            "fecha": "2024-09-02T16:00:00Z",
+            "temperatura": 26.8,
+            "humedad": 58.2,
+            "presion": 1008.9,
+            "velocidad_viento": 16.3
+        }
+    },
+    {
+        "model": "clima.climatologia",
+        "pk": 10,
+        "fields": {
+            "fecha": "2024-09-02T20:00:00Z",
+            "temperatura": 22.9,
+            "humedad": 64.7,
+            "presion": 1012.1,
+            "velocidad_viento": 11.2
+        }
+    }
+]
