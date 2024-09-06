@@ -5,80 +5,279 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gráfica de Datos Climatológicos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body, html {
+            background-color: gray;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; 
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(300px, 1fr)); /* Ajuste automático de columnas */
+            grid-auto-rows: minmax(400px, auto); /* Ajuste automático de filas */
+            width: 100vw; /* Ajusta el ancho al 100% del viewport */
+            height: 80vh; /* Ajusta la altura al 80% del viewport */
+            gap: 30px;
+            padding: 20px; /* Añade algo de espacio interno */
+            box-sizing: border-box;
+        }
+
+        .grid-item {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%; /* Asegúrate de que el ancho no exceda el contenedor */
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        canvas {
+            width:90%;
+            height: 90%;
+        }
+
+        .filter-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container input {
+            margin: 0 10px;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>Gráfica de Datos Climatológicos</h1>
-    
-    <canvas id="graficoClimatologia" width="800" height="400"></canvas>
+
+    <!-- Controles para seleccionar el rango de fechas -->
+    <div class="filter-container">
+        <label for="startDate">Fecha de inicio:</label>
+        <input type="date" id="startDate">
+        <label for="endDate">Fecha de fin:</label>
+        <input type="date" id="endDate">
+        <button onclick="filtrarDatos()">Filtrar</button>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <h2>Temperatura (°C)</h2>
+            <canvas id="graficoTemperatura" width="400" height="300"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <h2>Humedad (%)</h2>
+            <canvas id="graficoHumedad" width="400" height="300"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <h2>Presión (hPa)</h2>
+            <canvas id="graficoPresion" width="400" height="300"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <h2>Velocidad del Viento (km/h)</h2>
+            <canvas id="graficoViento" width="400" height="300"></canvas>
+        </div>
+    </div>
 
     <script>
-        
+        // Datos originales
         const _fechas = {{ fechas | safe }};
         const _temperaturas = {{ temperaturas | safe }};
         const _humedades = {{ humedades | safe }};
         const _presiones = {{ presiones | safe }};
         const _velocidades_viento = {{ velocidades_viento | safe }};
 
-        const ctx = document.getElementById('graficoClimatologia').getContext('2d');
+        let chartTemperatura, chartHumedad, chartPresion, chartViento;
 
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: _fechas,
-                datasets: [
-                    {
+        function crearGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
+            const ctxTemperatura = document.getElementById('graficoTemperatura').getContext('2d');
+            const ctxHumedad = document.getElementById('graficoHumedad').getContext('2d');
+            const ctxPresion = document.getElementById('graficoPresion').getContext('2d');
+            const ctxViento = document.getElementById('graficoViento').getContext('2d');
+
+            chartTemperatura = new Chart(ctxTemperatura, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
                         label: 'Temperatura (°C)',
-                        data: _temperaturas,
+                        data: temperaturas,
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         fill: true,
-                        borderWidth: 1
-                    },
-                    {
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Temperatura (°C)'
+                            },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            chartHumedad = new Chart(ctxHumedad, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
                         label: 'Humedad (%)',
-                        data: _humedades,
+                        data: humedades,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         fill: true,
-                        borderWidth: 1
-                    },
-                    {
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Humedad (%)'
+                            },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            chartPresion = new Chart(ctxPresion, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
                         label: 'Presión (hPa)',
-                        data: _presiones,
+                        data: presiones,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         fill: true,
-                        borderWidth: 1
-                    },
-                    {
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Presión (hPa)'
+                            },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            chartViento = new Chart(ctxViento, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
                         label: 'Velocidad del Viento (km/h)',
-                        data: _velocidades_viento,
+                        data: velocidades_viento,
                         borderColor: 'rgba(153, 102, 255, 1)',
                         backgroundColor: 'rgba(153, 102, 255, 0.2)',
                         fill: true,
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Fecha'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Valor'
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            }
                         },
-                        beginAtZero: false
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Velocidad (km/h)'
+                            },
+                            beginAtZero: false
+                        }
                     }
                 }
+            });
+        }
+
+        function filtrarDatos() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (startDate && endDate) {
+                const fechasFiltradas = _fechas.filter(fecha => fecha >= startDate && fecha <= endDate);
+                const startIndex = _fechas.indexOf(fechasFiltradas[0]);
+                const endIndex = _fechas.indexOf(fechasFiltradas[fechasFiltradas.length - 1]);
+
+                const temperaturasFiltradas = _temperaturas.slice(startIndex, endIndex + 1);
+                const humedadesFiltradas = _humedades.slice(startIndex, endIndex + 1);
+                const presionesFiltradas = _presiones.slice(startIndex, endIndex + 1);
+                const velocidadesVientoFiltradas = _velocidades_viento.slice(startIndex, endIndex + 1);
+
+                actualizarGraficos(fechasFiltradas, temperaturasFiltradas, humedadesFiltradas, presionesFiltradas, velocidadesVientoFiltradas);
             }
-        });
+        }
+
+        function actualizarGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
+            chartTemperatura.data.labels = fechas;
+            chartTemperatura.data.datasets[0].data = temperaturas;
+            chartTemperatura.update();
+
+            chartHumedad.data.labels = fechas;
+            chartHumedad.data.datasets[0].data = humedades;
+            chartHumedad.update();
+
+            chartPresion.data.labels = fechas;
+            chartPresion.data.datasets[0].data = presiones;
+            chartPresion.update();
+
+            chartViento.data.labels = fechas;
+            chartViento.data.datasets[0].data = velocidades_viento;
+            chartViento.update();
+        }
+
+        crearGraficos(_fechas, _temperaturas, _humedades, _presiones, _velocidades_viento);
     </script>
 </body>
 </html>
