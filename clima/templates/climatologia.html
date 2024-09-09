@@ -7,7 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body, html {
-            background-color: gray;
+            background-color: rgb(211, 211, 211);
+            font-family: Arial, Helvetica, sans-serif;
             height: 100%;
             display: flex;
             justify-content: center;
@@ -16,22 +17,23 @@
         }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, minmax(300px, 1fr)); /* Ajuste automático de columnas */
-            grid-auto-rows: minmax(400px, auto); /* Ajuste automático de filas */
-            width: 100vw; /* Ajusta el ancho al 100% del viewport */
-            height: 80vh; /* Ajusta la altura al 80% del viewport */
+            grid-template-columns: repeat(2, minmax(200px, 1fr)); /* Ajuste automático de columnas */
+            grid-auto-rows: minmax(200px, auto); /* Ajuste automático de filas */
+            width: 100vw; 
+            height: 80vh;
             gap: 30px;
-            padding: 20px; /* Añade algo de espacio interno */
             box-sizing: border-box;
         }
 
         .grid-item {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 10px;
+            background-color: #e7e7e7;
+            padding: 20px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 100%; /* Asegúrate de que el ancho no exceda el contenedor */
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra el canvas horizontalmente */
+            justify-content: center; /* Centra el canvas verticalmente si la altura es fija */
         }
 
         h2 {
@@ -39,8 +41,8 @@
         }
 
         canvas {
-            width:90%;
-            height: 90%;
+            width:100%;
+            height: 100%;
         }
 
         .filter-container {
@@ -51,6 +53,7 @@
         .filter-container input {
             margin: 0 10px;
             padding: 5px;
+            border-radius: 20px;
         }
     </style>
 </head>
@@ -66,25 +69,25 @@
         <button onclick="filtrarDatos()">Filtrar</button>
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container"> <!-- CONTENEDOR TEMPERATURA -->
         <div class="grid-item">
             <h2>Temperatura (°C)</h2>
-            <canvas id="graficoTemperatura" width="400" height="300"></canvas>
+            <canvas id="graficoTemperatura"></canvas>
         </div>
 
-        <div class="grid-item">
+        <div class="grid-item"> <!-- CONTENEDOR HUMEDAD -->
             <h2>Humedad (%)</h2>
-            <canvas id="graficoHumedad" width="400" height="300"></canvas>
+            <canvas id="graficoHumedad"></canvas>
         </div>
 
-        <div class="grid-item">
+        <div class="grid-item"> <!-- CONTENEDOR PRESION -->
             <h2>Presión (hPa)</h2>
-            <canvas id="graficoPresion" width="400" height="300"></canvas>
+            <canvas id="graficoPresion"></canvas>
         </div>
 
-        <div class="grid-item">
+        <div class="grid-item"> <!-- CONTENEDOR VELOCIDAD VIENTO -->
             <h2>Velocidad del Viento (km/h)</h2>
-            <canvas id="graficoViento" width="400" height="300"></canvas>
+            <canvas id="graficoViento"></canvas>
         </div>
     </div>
 
@@ -125,6 +128,12 @@
                             title: {
                                 display: true,
                                 text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
                             }
                         },
                         y: {
@@ -137,6 +146,7 @@
                     }
                 }
             });
+
 
             chartHumedad = new Chart(ctxHumedad, {
                 type: 'line',
@@ -159,6 +169,12 @@
                             title: {
                                 display: true,
                                 text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
                             }
                         },
                         y: {
@@ -193,6 +209,12 @@
                             title: {
                                 display: true,
                                 text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
                             }
                         },
                         y: {
@@ -227,6 +249,12 @@
                             title: {
                                 display: true,
                                 text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
                             }
                         },
                         y: {
