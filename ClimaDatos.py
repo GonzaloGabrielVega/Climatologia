@@ -5,9 +5,9 @@ import json
 # Script para autogenerar datos climatologicos y guardarlos como .json 
 def generar_datos_climatologia(cantidad):
     datos = []
-    fecha_inicial = datetime(2024, 9, 1, 8, 0, 0)  # Fecha inicial
+    fecha_inicial = datetime(2024, 2, 4, 8, 0, 0)  # Fecha inicial
     for i in range(cantidad):
-        fecha = fecha_inicial + timedelta(hours=24 * i)  # Datos cada 4 horas
+        fecha = fecha_inicial + timedelta(hours=12 * i)  # Datos cada 12 horas
         temperatura = round(random.uniform(25, 28), 1)  # Temperatura entre 18 y 28°C
         humedad = round(random.uniform(50, 65), 1)  # Humedad entre 50% y 75%
         presion = round(random.uniform(1008, 1016), 1)  # Presión entre 1008 y 1016 hPa
