@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device, initial-scale=1.0">
     <title>Gráfica de Datos Climatológicos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -17,32 +17,37 @@
         }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, minmax(200px, 1fr)); /* Ajuste automático de columnas */
-            grid-auto-rows: minmax(200px, auto); /* Ajuste automático de filas */
-            width: 100vw; 
-            height: 80vh;
-            gap: 30px;
+            grid-template-columns: repeat(2, 1fr); /* Dos columnas que se ajustan automáticamente */
+            grid-auto-rows: minmax(200px, auto); /* Filas flexibles con mínimo de 200px */
+            width: 90vw; /* 90% del ancho del viewport */
+            height: 80vh; /* 80% de la altura del viewport */
+            gap: 20px; /* Espacio entre los elementos */
             box-sizing: border-box;
+            padding: 10px; /* Asegura que el contenido no llegue a los bordes */
         }
 
         .grid-item {
             background-color: #e7e7e7;
-            padding: 20px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
-            display: flex;
+            border-radius: 10px;
+            display: flex; /* Cambiado a flexbox para alineación */
             flex-direction: column;
-            align-items: center; /* Centra el canvas horizontalmente */
-            justify-content: center; /* Centra el canvas verticalmente si la altura es fija */
+            align-items: center; /* Centra el contenido horizontalmente */
+            justify-content: space-between; /* Alinea el título y canvas en el espacio */
+            padding: 10px; /* Añade espacio interior para evitar desbordamientos */
         }
 
-        h2 {
+        h4 {
             text-align: center;
+            margin: 10px 0;
+            font-size: 1.2em; /* Ajusta el tamaño del texto para que no sea muy grande */
         }
 
         canvas {
-            width:100%;
-            height: 100%;
+            width: 90%; /* El canvas ocupará el 90% del ancho del contenedor */
+            height: auto; /* Mantiene la proporción sin desbordar */
+            max-height: 90%; /* Asegura que el canvas no ocupe más del 90% de la altura disponible */
         }
 
         .filter-container {
@@ -71,22 +76,22 @@
 
     <div class="grid-container"> <!-- CONTENEDOR TEMPERATURA -->
         <div class="grid-item">
-            <h2>Temperatura (°C)</h2>
+            <h4>Temperatura (°C)</h4>
             <canvas id="graficoTemperatura"></canvas>
         </div>
 
         <div class="grid-item"> <!-- CONTENEDOR HUMEDAD -->
-            <h2>Humedad (%)</h2>
+            <h4>Humedad (%)</h4>
             <canvas id="graficoHumedad"></canvas>
         </div>
 
         <div class="grid-item"> <!-- CONTENEDOR PRESION -->
-            <h2>Presión (hPa)</h2>
+            <h4>Presión (hPa)</h4>
             <canvas id="graficoPresion"></canvas>
         </div>
 
         <div class="grid-item"> <!-- CONTENEDOR VELOCIDAD VIENTO -->
-            <h2>Velocidad del Viento (km/h)</h2>
+            <h4>Velocidad del Viento (km/h)</h4>
             <canvas id="graficoViento"></canvas>
         </div>
     </div>
@@ -117,7 +122,7 @@
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         fill: true,
-                        borderWidth: 1,
+                        borderWidth: 0.5,
                         tension: 0.4
                     }]
                 },
