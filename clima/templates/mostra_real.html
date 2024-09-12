@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Climáticos en Tiempo Real</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    <style>
+        body, html {
+            background-color: rgb(211, 211, 211);
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; 
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Dos columnas que se ajustan automáticamente */
+            grid-auto-rows: minmax(200px, auto); /* Filas flexibles con mínimo de 200px */
+            width: 90vw; /* 90% del ancho del viewport */
+            height: 80vh; /* 80% de la altura del viewport */
+            gap: 20px; /* Espacio entre los elementos */
+            box-sizing: border-box;
+            padding: 10px; /* Asegura que el contenido no llegue a los bordes */
+        }
+
+        .grid-item {
+            background-color: #e7e7e7;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            border-radius: 10px;
+            display: flex; /* Cambiado a flexbox para alineación */
+            flex-direction: column;
+            align-items: center; /* Centra el contenido horizontalmente */
+            justify-content: space-between; /* Alinea el título y canvas en el espacio */
+            padding: 10px; /* Añade espacio interior para evitar desbordamientos */
+        }
+
+        h4 {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.2em; /* Ajusta el tamaño del texto para que no sea muy grande */
+        }
+
+        canvas {
+            width: 90%; /* El canvas ocupará el 90% del ancho del contenedor */
+            height: auto; /* Mantiene la proporción sin desbordar */
+            max-height: 90%; /* Asegura que el canvas no ocupe más del 90% de la altura disponible */
+        }
+
+        .filter-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container input {
+            margin: 0 10px;
+            padding: 5px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gráfica de Datos Climatológicos</h1>
+
+    
+    <div class="filter-container">
+        <label for="startDate">Fecha de inicio:</label>
+        <input type="date" id="startDate">
+        <label for="endDate">Fecha de fin:</label>
+        <input type="date" id="endDate">
+        <button onclick="filtrarDatos()">Filtrar</button>
+    </div>
+
+    <div class="grid-container"> 
+        <div class="grid-item">
+            <h4>Temperatura (°C)</h4>
+            <canvas id="graficoTemperatura"></canvas>
+        </div>
+
+        <div class="grid-item"> 
+            <h4>Humedad (%)</h4>
+            <canvas id="graficoHumedad"></canvas>
+        </div>
+
+        <div class="grid-item"> 
+            <h4>Presión (hPa)</h4>
+            <canvas id="graficoPresion"></canvas>
+        </div>
+
+        <div class="grid-item"> 
+            <h4>Velocidad del Viento (km/h)</h4>
+            <canvas id="graficoViento"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Datos originales
+        const _fechas = 0
+        const _temperaturas = 0
+        const _humedades = 0
+        const _presiones = 0
+        const _velocidades_viento = 0
+
+        let chartTemperatura, chartHumedad, chartPresion, chartViento;
+
+        function crearGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
+            const ctxTemperatura = document.getElementById('graficoTemperatura').getContext('2d');
+            const ctxHumedad = document.getElementById('graficoHumedad').getContext('2d');
+            const ctxPresion = document.getElementById('graficoPresion').getContext('2d');
+            const ctxViento = document.getElementById('graficoViento').getContext('2d');
+
+            chartTemperatura = new Chart(ctxTemperatura, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Temperatura (°C)',
+                        data: temperaturas,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        borderWidth: 0.5,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Temperatura (°C)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+
+            chartHumedad = new Chart(ctxHumedad, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Humedad (%)',
+                        data: humedades,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Humedad (%)'
+                            },
+                            min:0,
+                            max:100,
+                            ticks: {
+                                stepSize:10,
+                                callback: function(value, index, values) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            chartPresion = new Chart(ctxPresion, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Presión (hPa)',
+                        data: presiones,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Presión (hPa)'
+                            },
+                            min: 900, // Valor mínimo del eje Y (900 hPa)
+                            max: 1100, // Valor máximo del eje Y (1100 hPa)
+                            ticks: {
+                                stepSize: 10, // Separación entre las marcas (cada 10 hPa)
+                                callback: function(value, index, values) {
+                                    return value ;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            chartViento = new Chart(ctxViento, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Velocidad del Viento (km/h)',
+                        data: velocidades_viento,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        fill: true,
+                        borderWidth: 1,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            },
+                            ticks: {
+                                maxRotation: 45,  // Rota las etiquetas para que se ajusten mejor
+                                minRotation: 30,
+                                autoSkip: true,  // Omite etiquetas automáticamente si hay muchas
+                                maxTicksLimit: 10 // Limita el número máximo de etiquetas visibles
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Velocidad (km/h)'
+                            },
+                            min: 5,
+                            max:35,
+                            ticks: {
+                                stepSize:1,
+                                callback:function(value,index,values) {
+                                    return value + 'Km/h';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+         function datos_climaticos() {
+            
+            fetch('http://localhost:8000/obtener_datos')
+                .then(response => response.json())
+                .then(datos =>  actualizarGraficos(datos.fechas,datos.temperaturas,datos.humedades,datos.presiones,datos.velocidades_vient))
+                .catch(error => console.log('Fetch error:', error));
+
+                
+        
+        }
+
+        function actualizarGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
+            chartTemperatura.data.labels = fechas;
+            chartTemperatura.data.datasets[0].data = temperaturas;
+            chartTemperatura.update();
+
+            chartHumedad.data.labels = fechas;
+            chartHumedad.data.datasets[0].data = humedades;
+            chartHumedad.update();
+
+            chartPresion.data.labels = fechas;
+            chartPresion.data.datasets[0].data = presiones;
+            chartPresion.update();
+
+            chartViento.data.labels = fechas;
+            chartViento.data.datasets[0].data = velocidades_viento;
+            chartViento.update();
+        }
+
+        crearGraficos(_fechas, _temperaturas, _humedades, _presiones, _velocidades_viento);
+       setInterval( datos_climaticos,1000);
+    </script>
+</body>
+</html>
+
+
