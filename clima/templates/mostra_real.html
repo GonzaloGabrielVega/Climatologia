@@ -362,7 +362,7 @@
 function datos_climaticos() {
             fetch('/obtener_datos/')
                 .then(response => response.json())
-                .then(datos =>  actualizarGraficos(datos.fechas,datos.temperaturas,datos.humedades,datos.presiones,datos.velocidades_vient))
+                .then(datos =>  actualizarGraficos(datos.fechas,datos.temperaturas,datos.humedades,datos.presiones,datos.velocidades_viento))
                 .catch(error => console.log('Fetch error:', error));        
         }
 

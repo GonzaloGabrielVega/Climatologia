@@ -111,7 +111,7 @@ def detener_lectura(request):
 
 #prueba    
 ejecucion=False   
-
+prueba_viva=None
 def crear_registro_climatologico():
     try:
         global ejecucion
@@ -121,7 +121,7 @@ def crear_registro_climatologico():
                 temperatura=random.uniform(10, 30),
                 humedad=random.uniform(40, 90),
                 presion=random.uniform(1000, 1100),
-                velocidad_viento=random.uniform(0, 10)
+                velocidad_viento=random.uniform(0, 30)
             )
             nueva_entrada.save()
             print(f"Nuevo registro creado: {nueva_entrada}")
@@ -130,11 +130,16 @@ def crear_registro_climatologico():
         print("a corrido un erro :" + Exception)        
 
 def iniciar_prueba(request):
-    global ejecucion
+    global ejecucion,prueba_viva
     ejecucion=True
-    t = threading.Thread(target=crear_registro_climatologico)
-    t.start()
-    return JsonResponse({'status':'prueba iniciada'})
+    if prueba_viva is None or not prueba_viva.is_alive():
+        prueba_viva= threading.Thread(target=crear_registro_climatologico)
+        prueba_viva.start()
+        return JsonResponse({'status':'prueba iniciada'})
+    else:
+        return JsonResponse({'status':'la prueba ya esta uniciada'})
+    
+
 
 def detener_prueba(request):
     global ejecucion
