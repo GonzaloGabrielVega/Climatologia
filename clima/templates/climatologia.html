@@ -120,111 +120,139 @@
 <!-- nevo estilo-->
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráfica de Datos Climatológicos</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: rgb(211, 211, 211);
-            font-family: Arial, Helvetica, sans-serif;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            width: 90vw;
-            max-width: 1200px;
-            gap: 20px;
-        }
-
-        .grafico {
-            flex: 0 0 45%;
-            background-color: #e7e7e7;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 500px;
-            max-height: 400px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            transition: width 0.8s ease-in-out, height 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
-        }
-
-        h4 {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 1.2em;
-        }
-
-        canvas {
-            width: 100%;
-            height: auto;
-            max-height: 350px;
-        }
-
-        /* Clase para agrandar el gráfico */
-        .agrandado {
-            max-width: 80vw;
-            max-height: 80vh;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 80vw;
-            height: 80vh;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            background-color: white;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            overflow: auto;
-            cursor: zoom-out;
-            
-        }
-
-        /* Ocultar los demás gráficos cuando uno esté agrandado */
-        .oculto {
-            display: none;
-        }
-        
-        .filter-container{
-            margin-bottom: 40px;
-        }
-        header{
-            height: 100px;
-            width: 100%;
-            background-color: aliceblue;
-            display: flex;
-            flex-direction: row;
-            align-items: flex-end;
-            a{
-                text-decoration: none;
-                margin-left: 10px;
-
-            }
-        }
-    </style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gráfica de Datos Climatológicos</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: rgb(211, 211, 211);
+        font-family: Arial, Helvetica, sans-serif;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        background-color: var(--color-gris);
+        color: var(--color-claro);
+        padding: 10px;
+        text-align: center;
+        border-bottom: 5px solid var(--color-naranja);
+        height: auto;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.5em;
+    }
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .tarjeta-link {
+        display: block;
+        padding: 15px 25px;
+        background-color: #ffffff;
+        color: #333333;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        text-align: center;
+        text-decoration: none;
+        font-size: 1.1em;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .tarjeta-link:hover {
+        background-color: #f5f5f5;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    .filter-container {
+        margin: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(250px,1fr));
+        grid-template-rows: repeat(2,minmax(250px,1fr));
+        gap: 20px;
+        width: 100%;
+        padding: 0 10px; /* Ajusta el espaciado a los lados */
+        box-sizing: border-box;
+        flex-grow: 1; /* Permite que el contenedor crezca para llenar el espacio disponible */
+    }
+
+    .grafico {
+        flex: 1 1 48%; /* Ocupa el 48% del ancho del contenedor para permitir el espaciado entre los gráficos */
+        background-color: #e7e7e7;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px; /* Espacio entre filas de gráficos */
+        box-sizing: border-box;
+        height: auto; /* Asegura que la altura se ajuste automáticamente */
+    }
+
+    h4 {
+        text-align: center;
+        margin: 10px 0;
+        font-size: 1.2em;
+    }
+
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Clase para agrandar el gráfico */
+    .agrandado {
+        max-width: 80vw;
+        max-height: 80vh;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 80vw;
+        height: 80vh;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        overflow: auto;
+        cursor: zoom-out;
+    }
+
+    /* Ocultar los demás gráficos cuando uno esté agrandado */
+    .oculto {
+        display: none;
+    }
+
+</style>
+
 <body>
     <header>
-        <a href="/">Historial de datos</a>
-        <a href="/mostrar_tiempo_real/">Lectura de datos en directo</a>
+        <h1>Gráfica de Datos Climatológicos</h1>
+        <div class="nav-links">
+            <a href="/" class="tarjeta-link">Historial de datos</a>
+            <a href="/mostrar_tiempo_real/" class="tarjeta-link">Lectura de datos en directo</a>
+        </div>
     </header>
-    <h1>Gráfica de Datos Climatológicos</h1>
+    
 
     <div class="filter-container">
         <label for="startDate">Fecha de inicio:</label>
