@@ -1,136 +1,14 @@
-<!--<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráfica de Datos Climatológicos</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        body, html {
-            background-color: rgb(211, 211, 211);
-            font-family: Arial, Helvetica, sans-serif;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column; 
-        }
-        
-        /* Clase para agrandar el gráfico y centrarlo */
-        .agrandado {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 80vw;
-            height: 80vh;
-            transform: translate(-50%, -50%);
-            z-index: 10; /* Asegura que esté sobre los demás elementos */
-            background-color: white;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Ocultar los demás gráficos cuando uno esté agrandado */
-        .oculto {
-            display: none;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-auto-rows: minmax(200px, auto);
-            width: 90vw;
-            height: 80vh;
-            gap: 20px;
-            box-sizing: border-box;
-            padding: 10px;
-            overflow: hidden; 
-          
-        }
-
-        .grid-item {
-            background-color: #e7e7e7;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            transition: all 0.3s ease; /* Transiciones suaves */
-        }
-
-        h4 {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 1.2em;
-        }
-
-        canvas {
-            width: 90%;
-            height: auto;
-            max-height: 90%;
-        }
-
-        .filter-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .filter-container input {
-            margin: 0 10px;
-            padding: 5px;
-            border-radius: 20px;
-        }
-    </style>
-</head>
-<body>
-<h1>Gráfica de Datos Climatológicos</h1>
-
-<div class="filter-container">
-    <label for="startDate">Fecha de inicio:</label>
-    <input type="date" id="startDate">
-    <label for="endDate">Fecha de fin:</label>
-    <input type="date" id="endDate">
-    <button onclick="filtrarDatos()">Filtrar</button>
-</div>
-
-<div class="grid-container">
-    <div class="grid-item" id="temperatura">
-        <h4>Temperatura (°C)</h4>
-        <canvas id="graficoTemperatura"></canvas>
-    </div>
-
-    <div class="grid-item" id="humedad">
-        <h4>Humedad (%)</h4>
-        <canvas id="graficoHumedad"></canvas>
-    </div>
-
-    <div class="grid-item" id="presion">
-        <h4>Presión (hPa)</h4>
-        <canvas id="graficoPresion"></canvas>
-    </div>
-
-    <div class="grid-item" id="viento">
-        <h4>Velocidad del Viento (km/h)</h4>
-        <canvas id="graficoViento"></canvas>
-    </div>
-</div>
--->
-<!-- nevo estilo-->
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráfica de Datos Climatológicos</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    
+    <title>Datos Climáticos en Tiempo Real</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
     <style>
         body {
-            margin: 0;
             padding: 0;
+            margin: 0;
             background-color: rgb(211, 211, 211);
             font-family: Arial, Helvetica, sans-serif;
             height: 100%;
@@ -206,16 +84,16 @@
         }
         header{
             height: 100px;
-            width: 100%;
+            width: 100dvw;
             background-color: aliceblue;
             display: flex;
             flex-direction: row;
             align-items: flex-end;
-            a{
-                text-decoration: none;
-                margin-left: 10px;
-
-            }
+            
+        }
+        header a {
+            text-decoration: none;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -225,14 +103,10 @@
         <a href="/mostrar_tiempo_real/">Lectura de datos en directo</a>
     </header>
     <h1>Gráfica de Datos Climatológicos</h1>
-
-    <div class="filter-container">
-        <label for="startDate">Fecha de inicio:</label>
-        <input type="date" id="startDate">
-        <label for="endDate">Fecha de fin:</label>
-        <input type="date" id="endDate">
-        <button onclick="filtrarDatos()">Filtrar</button>
-    </div>
+    <!-- Botones para controlar la lectura en tiempo real -->
+    <button id="start-reading">Iniciar Lectura</button>
+    <button id="stop-reading" disabled>Detener Lectura</button>
+   
     <div class="container">
         <div class="grafico" id="temperatura">
             <h4>Temperatura (°C)</h4>
@@ -257,11 +131,11 @@
 
     <script>
         // Datos originales
-        const _fechas = {{ fechas | safe }};
-        const _temperaturas = {{ temperaturas | safe }};
-        const _humedades = {{ humedades | safe }};
-        const _presiones = {{ presiones | safe }};
-        const _velocidades_viento = {{ velocidades_viento | safe }};
+        const _fechas = 0
+        const _temperaturas = 0
+        const _humedades = 0
+        const _presiones = 0
+        const _velocidades_viento = 0
 
         let chartTemperatura, chartHumedad, chartPresion, chartViento;
 
@@ -454,45 +328,10 @@
             });
         }
 
-        function filtrarDatos() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+         
 
-            if (startDate && endDate) {
-                const fechasFiltradas = _fechas.filter(fecha => fecha >= startDate && fecha <= endDate);
-                const startIndex = _fechas.indexOf(fechasFiltradas[0]);
-                const endIndex = _fechas.indexOf(fechasFiltradas[fechasFiltradas.length - 1]);
-
-                const temperaturasFiltradas = _temperaturas.slice(startIndex, endIndex + 1);
-                const humedadesFiltradas = _humedades.slice(startIndex, endIndex + 1);
-                const presionesFiltradas = _presiones.slice(startIndex, endIndex + 1);
-                const velocidadesVientoFiltradas = _velocidades_viento.slice(startIndex, endIndex + 1);
-
-                actualizarGraficos(fechasFiltradas, temperaturasFiltradas, humedadesFiltradas, presionesFiltradas, velocidadesVientoFiltradas);
-            }
-        }
-
-        function actualizarGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
-            chartTemperatura.data.labels = fechas;
-            chartTemperatura.data.datasets[0].data = temperaturas;
-            chartTemperatura.update();
-
-            chartHumedad.data.labels = fechas;
-            chartHumedad.data.datasets[0].data = humedades;
-            chartHumedad.update();
-
-            chartPresion.data.labels = fechas;
-            chartPresion.data.datasets[0].data = presiones;
-            chartPresion.update();
-
-            chartViento.data.labels = fechas;
-            chartViento.data.datasets[0].data = velocidades_viento;
-            chartViento.update();
-        }
-
-        crearGraficos(_fechas, _temperaturas, _humedades, _presiones, _velocidades_viento);
-
-
+        
+        //comienzo de logica para agrandar grafico
         const graficos = document.querySelectorAll('.grafico');
     let graficoAgrandado = null; 
 
@@ -517,7 +356,76 @@
         });
     });
 
+//finalizacion de logica para agrandar grafico
 
+//comienzo de logica  para actualizar los datos
+function datos_climaticos() {
+            fetch('/obtener_datos/')
+                .then(response => response.json())
+                .then(datos =>  actualizarGraficos(datos.fechas,datos.temperaturas,datos.humedades,datos.presiones,datos.velocidades_viento))
+                .catch(error => console.log('Fetch error:', error));        
+        }
+
+        function actualizarGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
+            chartTemperatura.data.labels = fechas;
+            chartTemperatura.data.datasets[0].data = temperaturas;
+            chartTemperatura.update();
+
+            chartHumedad.data.labels = fechas;
+            chartHumedad.data.datasets[0].data = humedades;
+            chartHumedad.update();
+
+            chartPresion.data.labels = fechas;
+            chartPresion.data.datasets[0].data = presiones;
+            chartPresion.update();
+
+            chartViento.data.labels = fechas;
+            chartViento.data.datasets[0].data = velocidades_viento;
+            chartViento.update();
+        }
+
+        crearGraficos(_fechas, _temperaturas, _humedades, _presiones, _velocidades_viento);
+        //fin de logica para actualizar los datos
+
+        //comienzo de logica para obtener y para las transmicion de  los datos
+
+        let updateInterval = null;
+
+        // Función para iniciar la lectura y la actualización del gráfico
+        document.getElementById('start-reading').addEventListener('click', function() {
+            fetch('/iniciar/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Lectura iniciada:', data);
+                    // Iniciar la actualización del gráfico cada 5 segundos
+                    if (!updateInterval) {
+                        updateInterval = setInterval(datos_climaticos, 5000);
+                    }
+                    // Deshabilitar el botón de inicio y habilitar el de detener
+                    document.getElementById('start-reading').disabled = true;
+                    document.getElementById('stop-reading').disabled = false;
+                });
+        });
+
+        // Función para detener la lectura y la actualización del gráfico
+        document.getElementById('stop-reading').addEventListener('click', function() {
+            fetch('/detener/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Lectura detenida:', data);
+                    // Detener la actualización del gráfico
+                    if (updateInterval) {
+                        clearInterval(updateInterval);
+                        updateInterval = null;
+                    }
+                    // Habilitar el botón de inicio y deshabilitar el de detener
+                    document.getElementById('start-reading').disabled = false;
+                    document.getElementById('stop-reading').disabled = true;
+                });
+        });
+        //final de la logica para obtener los datos
     </script>
 </body>
 </html>
+
+
