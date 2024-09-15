@@ -5,6 +5,10 @@ import threading
 import serial
 import time
 from django.utils import timezone
+import random
+from datetime import datetime, timedelta
+
+
 def vista_climatologica(request):
     datos = Climatologia.objects.all().order_by('fecha')
     
@@ -27,7 +31,17 @@ def vista_climatologica(request):
 
 def obtener_datos(request):
     datos = Climatologia.objects.all().order_by('fecha')
+    #prueba
+    #def obtener_ultimos_registros():
+   
+  #      diez_segundos_atras = datetime.now() - timedelta(seconds=10)
+        #cinco_segundos_atras = datetime.now() - timedelta(seconds=5)
 
+        #registros = Climatologia.objects.filter(
+         #   fecha__range=(cinco_segundos_atras, diez_segundos_atras)
+        #)
+        #return registros
+    #datos=obtener_ultimos_registros() 
     # Extrae los datos en listas y convierte las fechas a cadenas en formato ISO
     fechas = [dato.fecha.strftime('%Y-%m-%dT%H:%M:%SZ') for dato in datos]
     temperaturas = list(datos.values_list('temperatura', flat=True))
@@ -47,25 +61,7 @@ def obtener_datos(request):
 
 def mostrar_tiempo_real(request):
     return render(request,'mostra_real.html') 
-def vista_climatologica(request):
-    datos = Climatologia.objects.all().order_by('fecha')
-    
-    # Extrae los datos en listas y convierte las fechas a cadenas en formato ISO
-    fechas = [dato.fecha.strftime('%Y-%m-%dT%H:%M:%SZ') for dato in datos]
-    temperaturas = list(datos.values_list('temperatura', flat=True))
-    humedades = list(datos.values_list('humedad', flat=True))
-    presiones = list(datos.values_list('presion', flat=True))
-    velocidades_viento = list(datos.values_list('velocidad_viento', flat=True))
 
-    contexto = {
-        'fechas': fechas,
-        'temperaturas': temperaturas,
-        'humedades': humedades,
-        'presiones': presiones,
-        'velocidades_viento': velocidades_viento,
-    }
-    
-    return render(request, 'climatologia.html', contexto)
 
 
 # Variable global para almacenar el hilo de lectura
@@ -112,5 +108,35 @@ def detener_lectura(request):
     continuar_lectura = False
     return JsonResponse({'status': 'Lectura detenida'})
     
-    
 
+#prueba    
+ejecucion=False   
+
+def crear_registro_climatologico():
+    try:
+        global ejecucion
+        while ejecucion:
+            nueva_entrada = Climatologia(
+                fecha=timezone.now(),
+                temperatura=random.uniform(10, 30),
+                humedad=random.uniform(40, 90),
+                presion=random.uniform(1000, 1100),
+                velocidad_viento=random.uniform(0, 10)
+            )
+            nueva_entrada.save()
+            print(f"Nuevo registro creado: {nueva_entrada}")
+            time.sleep(2)
+    except Exception:
+        print("a corrido un erro :" + Exception)        
+
+def iniciar_prueba(request):
+    global ejecucion
+    ejecucion=True
+    t = threading.Thread(target=crear_registro_climatologico)
+    t.start()
+    return JsonResponse({'status':'prueba iniciada'})
+
+def detener_prueba(request):
+    global ejecucion
+    ejecucion=False
+    return JsonResponse({'status':'prueba terminada'})

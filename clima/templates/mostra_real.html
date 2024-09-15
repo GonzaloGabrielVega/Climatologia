@@ -106,13 +106,7 @@
     <!-- Botones para controlar la lectura en tiempo real -->
     <button id="start-reading">Iniciar Lectura</button>
     <button id="stop-reading" disabled>Detener Lectura</button>
-    <div class="filter-container">
-        <label for="startDate">Fecha de inicio:</label>
-        <input type="date" id="startDate">
-        <label for="endDate">Fecha de fin:</label>
-        <input type="date" id="endDate">
-        <button onclick="filtrarDatos()">Filtrar</button>
-    </div>
+   
     <div class="container">
         <div class="grafico" id="temperatura">
             <h4>Temperatura (°C)</h4>
@@ -338,7 +332,9 @@
 
         
         //comienzo de logica para agrandar grafico
-    const graficos=document.querySelectorAll('container');
+        const graficos = document.querySelectorAll('.grafico');
+    let graficoAgrandado = null; 
+
     graficos.forEach((s) => {
         s.addEventListener('click', () => {
             if (s.classList.contains('agrandado')) {
@@ -359,6 +355,7 @@
             }
         });
     });
+
 //finalizacion de logica para agrandar grafico
 
 //comienzo de logica  para actualizar los datos
@@ -396,7 +393,7 @@ function datos_climaticos() {
 
         // Función para iniciar la lectura y la actualización del gráfico
         document.getElementById('start-reading').addEventListener('click', function() {
-            fetch('/iniciarlectura/')
+            fetch('/iniciar/')
                 .then(response => response.json())
                 .then(data => {
                     console.log('Lectura iniciada:', data);
@@ -412,7 +409,7 @@ function datos_climaticos() {
 
         // Función para detener la lectura y la actualización del gráfico
         document.getElementById('stop-reading').addEventListener('click', function() {
-            fetch('/detenerlectura/')
+            fetch('/detener/')
                 .then(response => response.json())
                 .then(data => {
                     console.log('Lectura detenida:', data);
