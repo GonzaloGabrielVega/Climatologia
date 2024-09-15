@@ -6,66 +6,106 @@
     <title>Datos Climáticos en Tiempo Real</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
     <style>
-        body, html {
+        body {
+            padding: 0;
+            margin: 0;
             background-color: rgb(211, 211, 211);
             font-family: Arial, Helvetica, sans-serif;
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; 
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Dos columnas que se ajustan automáticamente */
-            grid-auto-rows: minmax(200px, auto); /* Filas flexibles con mínimo de 200px */
-            width: 90vw; /* 90% del ancho del viewport */
-            height: 80vh; /* 80% de la altura del viewport */
-            gap: 20px; /* Espacio entre los elementos */
-            box-sizing: border-box;
-            padding: 10px; /* Asegura que el contenido no llegue a los bordes */
+            flex-direction: column;
         }
 
-        .grid-item {
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 90vw;
+            max-width: 1200px;
+            gap: 20px;
+        }
+
+        .grafico {
+            flex: 0 0 45%;
             background-color: #e7e7e7;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
             border-radius: 10px;
-            display: flex; /* Cambiado a flexbox para alineación */
+            padding: 10px;
+            display: flex;
             flex-direction: column;
-            align-items: center; /* Centra el contenido horizontalmente */
-            justify-content: space-between; /* Alinea el título y canvas en el espacio */
-            padding: 10px; /* Añade espacio interior para evitar desbordamientos */
+            align-items: center;
+            justify-content: center;
+            max-width: 500px;
+            max-height: 400px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: width 0.8s ease-in-out, height 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
         }
 
         h4 {
             text-align: center;
             margin: 10px 0;
-            font-size: 1.2em; /* Ajusta el tamaño del texto para que no sea muy grande */
+            font-size: 1.2em;
         }
 
         canvas {
-            width: 90%; /* El canvas ocupará el 90% del ancho del contenedor */
-            height: auto; /* Mantiene la proporción sin desbordar */
-            max-height: 90%; /* Asegura que el canvas no ocupe más del 90% de la altura disponible */
+            width: 100%;
+            height: auto;
+            max-height: 350px;
         }
 
-        .filter-container {
-            text-align: center;
-            margin-bottom: 20px;
+        /* Clase para agrandar el gráfico */
+        .agrandado {
+            max-width: 80vw;
+            max-height: 80vh;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            cursor: zoom-out;
+            
         }
 
-        .filter-container input {
-            margin: 0 10px;
-            padding: 5px;
-            border-radius: 20px;
+        /* Ocultar los demás gráficos cuando uno esté agrandado */
+        .oculto {
+            display: none;
+        }
+        
+        .filter-container{
+            margin-bottom: 40px;
+        }
+        header{
+            height: 100px;
+            width: 100dvw;
+            background-color: aliceblue;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            
+        }
+        header a {
+            text-decoration: none;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <a href="/">Historial de datos</a>
+        <a href="/mostrar_tiempo_real/">Lectura de datos en directo</a>
+    </header>
     <h1>Gráfica de Datos Climatológicos</h1>
-
-    
+    <!-- Botones para controlar la lectura en tiempo real -->
+    <button id="start-reading">Iniciar Lectura</button>
+    <button id="stop-reading" disabled>Detener Lectura</button>
     <div class="filter-container">
         <label for="startDate">Fecha de inicio:</label>
         <input type="date" id="startDate">
@@ -73,24 +113,23 @@
         <input type="date" id="endDate">
         <button onclick="filtrarDatos()">Filtrar</button>
     </div>
-
-    <div class="grid-container"> 
-        <div class="grid-item">
+    <div class="container">
+        <div class="grafico" id="temperatura">
             <h4>Temperatura (°C)</h4>
             <canvas id="graficoTemperatura"></canvas>
         </div>
 
-        <div class="grid-item"> 
+        <div class="grafico" id="humedad">
             <h4>Humedad (%)</h4>
             <canvas id="graficoHumedad"></canvas>
         </div>
 
-        <div class="grid-item"> 
+        <div class="grafico" id="presion">
             <h4>Presión (hPa)</h4>
             <canvas id="graficoPresion"></canvas>
         </div>
 
-        <div class="grid-item"> 
+        <div class="grafico" id="viento">
             <h4>Velocidad del Viento (km/h)</h4>
             <canvas id="graficoViento"></canvas>
         </div>
@@ -295,15 +334,39 @@
             });
         }
 
-         function datos_climaticos() {
-            
-            fetch('http://localhost:8000/obtener_datos')
+         
+
+        
+        //comienzo de logica para agrandar grafico
+    const graficos=document.querySelectorAll('container');
+    graficos.forEach((s) => {
+        s.addEventListener('click', () => {
+            if (s.classList.contains('agrandado')) {
+                s.classList.remove('agrandado');
+                graficos.forEach(grafico => grafico.classList.remove('oculto')); 
+                graficoAgrandado = null; 
+            } else {
+                if (graficoAgrandado) {
+                    graficoAgrandado.classList.remove('agrandado'); 
+                }
+                s.classList.add('agrandado');
+                graficoAgrandado = s;
+                graficos.forEach(grafico => {
+                    if (grafico !== s) {
+                        grafico.classList.add('oculto');
+                    }
+                });
+            }
+        });
+    });
+//finalizacion de logica para agrandar grafico
+
+//comienzo de logica  para actualizar los datos
+function datos_climaticos() {
+            fetch('/obtener_datos/')
                 .then(response => response.json())
                 .then(datos =>  actualizarGraficos(datos.fechas,datos.temperaturas,datos.humedades,datos.presiones,datos.velocidades_vient))
-                .catch(error => console.log('Fetch error:', error));
-
-                
-        
+                .catch(error => console.log('Fetch error:', error));        
         }
 
         function actualizarGraficos(fechas, temperaturas, humedades, presiones, velocidades_viento) {
@@ -325,7 +388,45 @@
         }
 
         crearGraficos(_fechas, _temperaturas, _humedades, _presiones, _velocidades_viento);
-       setInterval( datos_climaticos,1000);
+        //fin de logica para actualizar los datos
+
+        //comienzo de logica para obtener y para las transmicion de  los datos
+
+        let updateInterval = null;
+
+        // Función para iniciar la lectura y la actualización del gráfico
+        document.getElementById('start-reading').addEventListener('click', function() {
+            fetch('/iniciarlectura/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Lectura iniciada:', data);
+                    // Iniciar la actualización del gráfico cada 5 segundos
+                    if (!updateInterval) {
+                        updateInterval = setInterval(datos_climaticos, 5000);
+                    }
+                    // Deshabilitar el botón de inicio y habilitar el de detener
+                    document.getElementById('start-reading').disabled = true;
+                    document.getElementById('stop-reading').disabled = false;
+                });
+        });
+
+        // Función para detener la lectura y la actualización del gráfico
+        document.getElementById('stop-reading').addEventListener('click', function() {
+            fetch('/detenerlectura/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Lectura detenida:', data);
+                    // Detener la actualización del gráfico
+                    if (updateInterval) {
+                        clearInterval(updateInterval);
+                        updateInterval = null;
+                    }
+                    // Habilitar el botón de inicio y deshabilitar el de detener
+                    document.getElementById('start-reading').disabled = false;
+                    document.getElementById('stop-reading').disabled = true;
+                });
+        });
+        //final de la logica para obtener los datos
     </script>
 </body>
 </html>
