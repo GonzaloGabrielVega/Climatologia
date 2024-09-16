@@ -31,18 +31,7 @@ def vista_climatologica(request):
 
 def obtener_datos(request):
     datos = Climatologia.objects.all().order_by('fecha')
-    #prueba
-    #def obtener_ultimos_registros():
-   
-  #      diez_segundos_atras = datetime.now() - timedelta(seconds=10)
-        #cinco_segundos_atras = datetime.now() - timedelta(seconds=5)
-
-        #registros = Climatologia.objects.filter(
-         #   fecha__range=(cinco_segundos_atras, diez_segundos_atras)
-        #)
-        #return registros
-    #datos=obtener_ultimos_registros() 
-    # Extrae los datos en listas y convierte las fechas a cadenas en formato ISO
+    
     fechas = [dato.fecha.strftime('%Y-%m-%dT%H:%M:%SZ') for dato in datos]
     temperaturas = list(datos.values_list('temperatura', flat=True))
     humedades = list(datos.values_list('humedad', flat=True))
@@ -56,10 +45,10 @@ def obtener_datos(request):
         'presiones': presiones,
         'velocidades_viento': velocidades_viento,
     }
-
     return JsonResponse(contexto)
 
 def mostrar_tiempo_real(request):
+    
     return render(request,'mostra_real.html') 
 
 
@@ -118,16 +107,16 @@ def crear_registro_climatologico():
         while ejecucion:
             nueva_entrada = Climatologia(
                 fecha=timezone.now(),
-                temperatura=random.uniform(10, 30),
-                humedad=random.uniform(40, 90),
-                presion=random.uniform(1000, 1100),
-                velocidad_viento=random.uniform(0, 30)
+                temperatura=random.uniform(10, 15),
+                humedad=random.uniform(30, 50),
+                presion=random.uniform(1000, 1020),
+                velocidad_viento=random.uniform(21, 30)
             )
             nueva_entrada.save()
             print(f"Nuevo registro creado: {nueva_entrada}")
             time.sleep(2)
     except Exception:
-        print("a corrido un erro :" + Exception)        
+        print("a ocurrido un error:" + Exception)        
 
 def iniciar_prueba(request):
     global ejecucion,prueba_viva
@@ -138,7 +127,6 @@ def iniciar_prueba(request):
         return JsonResponse({'status':'prueba iniciada'})
     else:
         return JsonResponse({'status':'la prueba ya esta uniciada'})
-    
 
 
 def detener_prueba(request):
