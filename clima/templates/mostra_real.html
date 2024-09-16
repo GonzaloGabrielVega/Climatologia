@@ -140,17 +140,21 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transform: translateY(0);
         }
-
-        .button-start.stop {
-            background-color: #dc3545; /* Color rojo para "Detener" */
-        }
-
-        .button-start.stop:hover {
-            background-color: #c82333; /* Color rojo oscuro en hover */
-        }
-
-        .button-start.stop:active {
-            background-color: #bd2130; /* Color rojo más oscuro cuando está presionado */
+        .button-borrar {
+            color: #ffffff;
+            max-width: 180px;
+            padding: 15px 25px;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background-color: #dc3545; /* Color verde para "Iniciar Lectura" por defecto */
         }
     </style>
 
@@ -167,7 +171,9 @@
 
     <div class="nav-links">
         <button class="button-start" id="start-stop-reading">Iniciar Lectura</button>
-        <button class="button-start" id="limpiar_base">BORRAR TODO</button>
+        <!-- <button class="button-start" id="limpiar_base">BORRAR TODO</button> -->
+        <button class="button-borrar" id="limpiar_base">Borrar 💀</button>
+
     </div>
 
     <div class="container">
@@ -512,7 +518,7 @@
                         }
                         // Cambiar el texto del botón a "Detener Lectura"
                         button.textContent = 'Detener Lectura';
-                        button.style.backgroundColor = '#dc3545'; // Rojo
+                        button.style.backgroundColor = '#dc3545'; // Rojo Detener
                     });
             } else {
                 fetch('/detener/')
@@ -528,7 +534,7 @@
                         }
                         // Cambiar el texto del botón a "Iniciar Lectura"
                         button.textContent = 'Iniciar Lectura';
-                        button.style.backgroundColor = '#1e7e34'; // Verde
+                        button.style.backgroundColor = '#1e7e34'; // Verde Iniciar
                     });
             }
         });
