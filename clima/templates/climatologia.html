@@ -242,6 +242,23 @@
         display: none;
     }
 
+    .button-borrar {
+            color: #ffffff;
+            max-width: 180px;
+            padding: 15px 25px;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background-color: #dc3545; /* Color verde para "Iniciar Lectura" por defecto */
+        }
+
 </style>
 
 <body>
@@ -250,9 +267,12 @@
         <div class="nav-links">
             <a href="/" class="tarjeta-link">Historial de datos</a>
             <a href="/mostrar_tiempo_real/" class="tarjeta-link">Lectura de datos en directo</a>
-        </div>
+        </div> 
     </header>
-    
+
+    <div class="nav-links">
+        <button class="button-borrar" id="limpiar_base" >Borrar registros</button>
+    </div>
 
     <div class="filter-container">
         <label for="startDate">Fecha de inicio:</label>
@@ -545,7 +565,17 @@
         });
     });
 
-
+    // Función para limpiar la base de datos
+    document.getElementById('limpiar_base').addEventListener('click', function() {
+                    fetch('/limpiar_base/')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.status);
+                            // Opcional: Limpiar los gráficos o reiniciar la vista
+                            actualizarGraficos([], [], [], [], []);
+                        })
+                        .catch(error => console.log('Fetch error:', error));
+        });
     </script>
 </body>
 </html>

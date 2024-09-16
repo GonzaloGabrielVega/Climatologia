@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos Climáticos en Tiempo Real</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    
     <style>
         body {
             margin: 0;
@@ -123,6 +124,8 @@
             transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
             cursor: pointer;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             background-color: #28a745; /* Color verde para "Iniciar Lectura" por defecto */
         }
 
@@ -159,9 +162,12 @@
 
         .button-stop:active {
             background-color: #bd2130; /* Color rojo más oscuro cuando está presionado */
-        }
+        }    
+        
     </style>
+
 </head>
+
 <body>
     <header>
         <h1>Gráfica de Datos Climatológicos</h1>
@@ -504,6 +510,8 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Lectura detenida:', data);
+                        // Actualizar el estado en localStorage
+                        localStorage.setItem('estadoLectura', 'detenida');
                         // Detener la actualización del gráfico
                         if (updateInterval) {
                             clearInterval(updateInterval);
@@ -515,6 +523,10 @@
             }
         });
         //final de la logica para obtener los datos
-    </script>
+
+        
+
+
+</script>
 </body>
 </html>

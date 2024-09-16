@@ -9,5 +9,5 @@ urlpatterns = [
     path('detenerlectura/',views.detener_lectura, name='detener_lectura_arduino'),
     path('iniciar/',views.iniciar_prueba,name='iniciar_prueba'),
     path('detener/',views.detener_prueba,name='detener_prueba'),
-    
+    path('limpiar_base/', views.limpiar_base, name='limpiar_base')   
 ]
