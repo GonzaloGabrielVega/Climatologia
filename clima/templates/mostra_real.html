@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos Climáticos en Tiempo Real</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    
     <style>
         body {
             margin: 0;
@@ -123,6 +124,8 @@
             transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
             cursor: pointer;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             background-color: #28a745; /* Color verde para "Iniciar Lectura" por defecto */
         }
 
@@ -150,7 +153,9 @@
             background-color: #bd2130; /* Color rojo más oscuro cuando está presionado */
         }
     </style>
+
 </head>
+
 <body>
     <header>
         <h1>Gráfica de Datos Climatológicos</h1>
@@ -162,6 +167,7 @@
 
     <div class="nav-links">
         <button class="button-start" id="start-stop-reading">Iniciar Lectura</button>
+        <button class="button-start" id="limpiar_base">BORRAR TODO</button>
     </div>
 
     <div class="container">
@@ -464,29 +470,57 @@
 
         let updateInterval = setInterval(datos_climaticos, 1000);
 
-        
-        // Función para iniciar o detener la lectura y la actualización del gráfico
-        document.getElementById('start-stop-reading').addEventListener('click', function() {
-            const button = document.getElementById('start-stop-reading');
+        // COMIENZO DE FUNCION PARA CONTROLAR EL ESTADO DEL BOTON    
+        const button = document.getElementById('start-stop-reading');
+        function obtenerEstadoStorage() {
+            console.log('Intervalo actual:', updateInterval);
+
+            return localStorage.getItem('estadoLectura') === 'iniciada';
+        }
+        function actualizarEstadoBoton() {
             
+            if(obtenerEstadoStorage()) { 
+                button.textContent = 'Detener Lectura';
+                button.style.backgroundColor= '#dc3545';
+                if(!updateInterval) {
+                    updateInterval = setInterval(datos_climaticos, 2000);
+                }
+            } else {
+                button.textContent= 'Iniciar Lectura';
+                button.style.backgroundColor = '#1e7e34';
+                if (updateInterval) {
+                    updateInterval= null;
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', actualizarEstadoBoton);
+        // FINAL DE FUNCION PARA CONTROLAR EL ESTADO DEL BOTON    
+
+        // Función para iniciar o detener la lectura y la actualización del gráfico
+        
+        button.addEventListener('click', function() {
             if (button.textContent === 'Iniciar Lectura') {
                 fetch('/iniciar/')
                     .then(response => response.json())
                     .then(data => {
                         console.log('Lectura iniciada:', data);
+                        // Actualizar el estado en localStorage
+                        localStorage.setItem('estadoLectura', 'iniciada');
                         // Iniciar la actualización del gráfico cada 1 segundo
                         if (!updateInterval) {
                             updateInterval = setInterval(datos_climaticos, 2000);
                         }
                         // Cambiar el texto del botón a "Detener Lectura"
                         button.textContent = 'Detener Lectura';
-                        button.style.backgroundColor = '#dc3545'; // CAMBIO DE COLOR
+                        button.style.backgroundColor = '#dc3545'; // Rojo
                     });
             } else {
                 fetch('/detener/')
                     .then(response => response.json())
                     .then(data => {
                         console.log('Lectura detenida:', data);
+                        // Actualizar el estado en localStorage
+                        localStorage.setItem('estadoLectura', 'detenida');
                         // Detener la actualización del gráfico
                         if (updateInterval) {
                             clearInterval(updateInterval);
@@ -494,11 +528,25 @@
                         }
                         // Cambiar el texto del botón a "Iniciar Lectura"
                         button.textContent = 'Iniciar Lectura';
-                        button.style.backgroundColor = '#1e7e34'; // CAMBIO DE COLOR
+                        button.style.backgroundColor = '#1e7e34'; // Verde
                     });
             }
         });
         //final de la logica para obtener los datos
-    </script>
+
+        // Función para limpiar la base de datos
+        document.getElementById('limpiar_base').addEventListener('click', function() {
+                    fetch('/limpiar_base/')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.status);
+                            // Opcional: Limpiar los gráficos o reiniciar la vista
+                            actualizarGraficos([], [], [], [], []);
+                        })
+                        .catch(error => console.log('Fetch error:', error));
+        });
+
+
+</script>
 </body>
 </html>

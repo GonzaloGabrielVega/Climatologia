@@ -133,3 +133,7 @@ def detener_prueba(request):
     global ejecucion
     ejecucion=False
     return JsonResponse({'status':'prueba terminada'})
+
+def limpiar_base(request):
+    Climatologia.objects.all().delete()
+    return JsonResponse({'status': 'Base de datos limpiada'})
