@@ -193,7 +193,7 @@
         </div>
 
         <div class="grafico" id="presion">
-            <h4>Presión (hPa)</h4>
+            <h4>Energia solar</h4>
             <canvas id="graficoPresion"></canvas>
         </div>
 
@@ -312,7 +312,7 @@
                 data: {
                     labels: fechas,
                     datasets: [{
-                        label: 'Presión (hPa)',
+                        label: 'Energia solar',
                         data: presiones,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -339,12 +339,12 @@
                         y: {
                             title: {
                                 display: true,
-                                text: 'Presión (hPa)'
+                                text: 'Energia solar'
                             },
-                            min: 900, // Valor mínimo del eje Y (900 hPa)
-                            max: 1100, // Valor máximo del eje Y (1100 hPa)
+                            min: 0, // Valor mínimo del eje Y (900 hPa)
+                            max: 10, // Valor máximo del eje Y (1100 hPa)
                             ticks: {
-                                stepSize: 10, // Separación entre las marcas (cada 10 hPa)
+                                stepSize: 0.5, // Separación entre las marcas (cada 10 hPa)
                                 callback: function(value, index, values) {
                                     return value ;
                                 }
@@ -388,8 +388,8 @@
                                 display: true,
                                 text: 'Velocidad (km/h)'
                             },
-                            min: 5,
-                            max:35,
+                            min: 1,
+                            max:20,
                             ticks: {
                                 stepSize:1,
                                 callback:function(value,index,values) {
@@ -490,7 +490,7 @@
                 button.classList.remove('button-start')
                 button.classList.add('button-stop')
                 button.textContent = 'Detener Lectura';
-                fetch('/iniciar/')
+                fetch('/iniciarlectura/')
                     .then(response => response.json())
                     .then(data => {
                         console.log('Lectura iniciada:', data);
@@ -506,7 +506,7 @@
                 button.classList.remove('button-stop')
                 button.classList.add('button-start')
                 button.textContent = 'Iniciar Lectura';
-                fetch('/detener/')
+                fetch('/detenerlectura/')
                     .then(response => response.json())
                     .then(data => {
                         console.log('Lectura detenida:', data);
